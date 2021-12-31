@@ -63,7 +63,7 @@ public class MsgTest {
 
     @Test
     public void getUserInfo() {
-        Long deptId = 581377087L;
+        Long deptId = 1L;
         final List<AbstrctUser> userList = userInfoService.selectUserListBaseOnDeptId(deptId);
         for (AbstrctUser abstrctUser : userList) {
             System.out.println(JSON.toJSONString(abstrctUser));
@@ -91,8 +91,11 @@ public class MsgTest {
 
     @Test
     public void sendMsg() {
-        List<String> userIds = Arrays.asList(new String[]{"manager2239"});
-        List<String> deptIds = Arrays.asList(new String[]{"581377087"});
-        messageService.sendToDeptInUser(userIds,deptIds,false,"你们好，元旦放假了！！！"+UUID.randomUUID());
+        for (int i = 0; i < 10; i++) {
+
+            List<String> userIds = Arrays.asList(new String[]{"221116691019969,manager2239"});
+            List<String> deptIds = Arrays.asList(new String[]{"1"});
+            messageService.sendToDeptInUser(userIds,deptIds,false,"你们好，元旦放假了！！！,我正在测试消息发送多人"+UUID.randomUUID());
+        }
     }
 }
