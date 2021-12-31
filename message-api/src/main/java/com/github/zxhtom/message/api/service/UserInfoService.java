@@ -6,4 +6,8 @@ import java.util.List;
 
 public interface UserInfoService {
     public List<AbstrctUser> selectUserListBaseOnDeptId(Long deptId);
+
+    public List<AbstrctUser> selectFullUserInfo(List<String> userId);
+
+    public List<AbstrctUser> selectUserBaseOnPhone(String iphone);
 }

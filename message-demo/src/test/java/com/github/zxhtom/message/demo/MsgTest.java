@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -64,6 +65,25 @@ public class MsgTest {
     public void getUserInfo() {
         Long deptId = 581377087L;
         final List<AbstrctUser> userList = userInfoService.selectUserListBaseOnDeptId(deptId);
+        for (AbstrctUser abstrctUser : userList) {
+            System.out.println(JSON.toJSONString(abstrctUser));
+        }
+    }
+
+    @Test
+    public void getUsrDetailTest() {
+        List<String> userIdList = new ArrayList<>();
+        userIdList.add("manager2239");
+        final List<AbstrctUser> userList = userInfoService.selectFullUserInfo(userIdList);
+        for (AbstrctUser abstrctUser : userList) {
+            System.out.println(JSON.toJSONString(abstrctUser));
+        }
+    }
+
+    @Test
+    public void getUsrDetailOnPhoneTest() {
+        String phone = "17366236771";
+        final List<AbstrctUser> userList = userInfoService.selectUserBaseOnPhone(phone);
         for (AbstrctUser abstrctUser : userList) {
             System.out.println(JSON.toJSONString(abstrctUser));
         }

@@ -13,4 +13,14 @@ public class UserInfoServiceImpl implements UserInfoService {
     public List<AbstrctUser> selectUserListBaseOnDeptId(Long deptId) {
         return null;
     }
+
+    @Override
+    public List<AbstrctUser> selectFullUserInfo(List<String> userId) {
+        return null;
+    }
+
+    @Override
+    public List<AbstrctUser> selectUserBaseOnPhone(String iphone) {
+        return null;
+    }
 }

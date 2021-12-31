@@ -1,5 +1,6 @@
 package com.github.zxhtom.dingding.core.model;
 
+import com.dingtalk.api.response.OapiV2UserGetResponse;
 import com.github.zxhtom.message.api.model.AbstrctUser;
 import lombok.Data;
 
@@ -11,4 +12,5 @@ import lombok.Data;
  */
 @Data
 public class DingDingUser extends AbstrctUser {
+    private OapiV2UserGetResponse.UserGetResponse userGetResponse;
 }
