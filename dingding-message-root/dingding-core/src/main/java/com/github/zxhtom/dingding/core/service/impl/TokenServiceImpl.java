@@ -31,6 +31,11 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
+    public Token getToken() {
+        return token;
+    }
+
+    @Override
     public String accessAndGetDingDingToken() {
         log.info("start get dingding talk token ........");
         if (StringUtils.isNotEmpty(tokenStr)) {

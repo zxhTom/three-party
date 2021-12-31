@@ -25,6 +25,8 @@
         <fastjson.version>1.2.78</fastjson.version>
         <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
         <http.version>4.5.3</http.version>
+        <collection.version>3.2.1</collection.version>
+        <hutool.version>5.3.9</hutool.version>
     </properties>
 
     <dependencies>
@@ -39,6 +41,11 @@
             <version>${commons.version}</version>
         </dependency>
         <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${collection.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
@@ -47,6 +54,11 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>${http.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
         </dependency>
     </dependencies>
     <dependencyManagement>

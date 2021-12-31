@@ -1,10 +1,14 @@
 package com.github.zxhtom.message.demo;
 
+import com.alibaba.fastjson.JSON;
 import com.dingtalk.api.response.OapiV2DepartmentListsubResponse;
 import com.github.zxhtom.dingding.core.model.RobotMessage;
 import com.github.zxhtom.dingding.core.model.RobotText;
 import com.github.zxhtom.dingding.core.service.DeptService;
 import com.github.zxhtom.dingding.core.service.RobotMessageService;
+import com.github.zxhtom.message.api.model.AbstrctUser;
+import com.github.zxhtom.message.api.service.MessageService;
+import com.github.zxhtom.message.api.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,11 +35,15 @@ public class MsgTest {
     DeptService deptService;
     @Autowired
     RobotMessageService robotMessageService;
+    @Autowired
+    UserInfoService userInfoService;
+    @Autowired
+    MessageService messageService;
     @Test
     public void getDeptListTest() {
         final List<OapiV2DepartmentListsubResponse.DeptBaseResponse> deptBaseResponses = deptService.selectDeptList(null);
         for (OapiV2DepartmentListsubResponse.DeptBaseResponse deptBaseRespons : deptBaseResponses) {
-            System.out.println(deptBaseRespons);
+            System.out.println(JSON.toJSONString(deptBaseRespons));
         }
     }
     @Test
@@ -48,5 +57,22 @@ public class MsgTest {
             robotMessage.setText(robotText);
             robotMessageService.robotSendMsgToChat(robotMessage);
         }
+    }
+
+
+    @Test
+    public void getUserInfo() {
+        Long deptId = 581377087L;
+        final List<AbstrctUser> userList = userInfoService.selectUserListBaseOnDeptId(deptId);
+        for (AbstrctUser abstrctUser : userList) {
+            System.out.println(JSON.toJSONString(abstrctUser));
+        }
+    }
+
+    @Test
+    public void sendMsg() {
+        List<String> userIds = Arrays.asList(new String[]{"manager2239"});
+        List<String> deptIds = Arrays.asList(new String[]{"581377087"});
+        messageService.sendToDeptInUser(userIds,deptIds,false,"你们好，元旦放假了！！！"+UUID.randomUUID());
     }
 }

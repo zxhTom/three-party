@@ -4,9 +4,10 @@ import com.github.zxhtom.dingding.core.config.Token;
 import com.github.zxhtom.dingding.core.service.DeptService;
 import com.github.zxhtom.dingding.core.service.RobotMessageService;
 import com.github.zxhtom.dingding.core.service.TokenService;
-import com.github.zxhtom.dingding.core.service.impl.DeptServiceImpl;
-import com.github.zxhtom.dingding.core.service.impl.RobotMessageImpl;
-import com.github.zxhtom.dingding.core.service.impl.TokenServiceImpl;
+import com.github.zxhtom.dingding.core.service.impl.*;
+import com.github.zxhtom.message.api.service.MessageService;
+import com.github.zxhtom.message.api.service.UserInfoService;
+import com.github.zxhtom.message.api.service.impl.UserInfoServiceImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -49,4 +50,20 @@ public class StartConfig {
         return deptService;
     }
 
+    @Bean
+    @ConditionalOnMissingBean
+    public UserInfoService userInfoService(TokenService tokenService) {
+        UserInfoDingDingServiceImpl userInfoService = new UserInfoDingDingServiceImpl();
+        userInfoService.setTokenService(tokenService);
+        return userInfoService;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MessageService messageService(TokenService tokenService) {
+        MessageDingDingServiceImpl messageDingDingService = new MessageDingDingServiceImpl();
+        messageDingDingService.setTokenService(tokenService);
+
+        return messageDingDingService;
+    }
 }
