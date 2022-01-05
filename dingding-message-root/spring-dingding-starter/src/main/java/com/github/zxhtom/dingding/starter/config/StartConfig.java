@@ -5,6 +5,7 @@ import com.github.zxhtom.dingding.core.service.DeptService;
 import com.github.zxhtom.dingding.core.service.RobotMessageService;
 import com.github.zxhtom.dingding.core.service.TokenService;
 import com.github.zxhtom.dingding.core.service.impl.*;
+import com.github.zxhtom.dingding.starter.annotation.DingDing;
 import com.github.zxhtom.message.api.service.MessageService;
 import com.github.zxhtom.message.api.service.UserInfoService;
 import com.github.zxhtom.message.api.service.impl.UserInfoServiceImpl;
@@ -21,7 +22,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class StartConfig {
-    @ConfigurationProperties(prefix = "dingding")
+    @ConfigurationProperties(prefix = "message.dingding")
     @Bean
     public Token token() {
         return new Token();
@@ -50,20 +51,17 @@ public class StartConfig {
         return deptService;
     }
 
-    @Bean
-    @ConditionalOnMissingBean
+    @Bean("dingdingUserInfoService")
     public UserInfoService userInfoService(TokenService tokenService) {
         UserInfoDingDingServiceImpl userInfoService = new UserInfoDingDingServiceImpl();
         userInfoService.setTokenService(tokenService);
         return userInfoService;
     }
 
-    @Bean
-    @ConditionalOnMissingBean
+    @Bean("dingdingMessageService")
     public MessageService messageService(TokenService tokenService) {
         MessageDingDingServiceImpl messageDingDingService = new MessageDingDingServiceImpl();
         messageDingDingService.setTokenService(tokenService);
-
         return messageDingDingService;
     }
 }

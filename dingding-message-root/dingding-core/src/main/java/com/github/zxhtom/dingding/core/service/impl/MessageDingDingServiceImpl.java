@@ -45,15 +45,15 @@ public class MessageDingDingServiceImpl implements MessageService {
     }
 
     @Override
-    public Integer sendToAll() {
+    public Integer sendToAll(String msg) {
         DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/chat/send");
         OapiChatSendRequest req = new OapiChatSendRequest();
         req.setChatid("chate39f5xxxxxx335");
-        OapiChatSendRequest.Msg msg = new OapiChatSendRequest.Msg();
+        OapiChatSendRequest.Msg message = new OapiChatSendRequest.Msg();
         OapiChatSendRequest.Text text = new OapiChatSendRequest.Text();
-        text.setContent("请于本月底提交月度工作报告。");
-        msg.setText(text);
-        msg.setMsgtype("text");
+        text.setContent(msg);
+        message.setText(text);
+        message.setMsgtype("text");
         req.setMsg(msg);
         OapiChatSendResponse rsp = null;
         try {
@@ -66,7 +66,7 @@ public class MessageDingDingServiceImpl implements MessageService {
     }
 
     @Override
-    public Integer sendToDeptInUser(List<String> userIds, List<String> depts, boolean allUser, String message) {
+    public Integer sendToDeptInUser(List<String> userIds, List<Long> depts, boolean allUser, String message) {
         if (!allUser){
             if (CollectionUtil.isEmpty(userIds)&& CollectionUtil.isEmpty(depts)){
                 throw new IllegalArgumentException("未推送给全部企业员工则需要指定企业员工或部门");

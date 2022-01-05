@@ -32,5 +32,10 @@
             <artifactId>spring.dingding.starter</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.zxhtom</groupId>
+            <artifactId>spring.wechat.starter</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 </project>

@@ -2,10 +2,13 @@ package com.github.zxhtom.message.demo;
 
 import com.alibaba.fastjson.JSON;
 import com.dingtalk.api.response.OapiV2DepartmentListsubResponse;
+import com.dingtalk.api.response.OapiV2UserGetResponse;
+import com.github.zxhtom.dingding.core.model.DingDingUser;
 import com.github.zxhtom.dingding.core.model.RobotMessage;
 import com.github.zxhtom.dingding.core.model.RobotText;
 import com.github.zxhtom.dingding.core.service.DeptService;
 import com.github.zxhtom.dingding.core.service.RobotMessageService;
+import com.github.zxhtom.dingding.starter.annotation.DingDing;
 import com.github.zxhtom.message.api.model.AbstrctUser;
 import com.github.zxhtom.message.api.service.MessageService;
 import com.github.zxhtom.message.api.service.UserInfoService;
@@ -13,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -36,10 +40,15 @@ public class MsgTest {
     DeptService deptService;
     @Autowired
     RobotMessageService robotMessageService;
+
     @Autowired
-    UserInfoService userInfoService;
-    @Autowired
+    @Qualifier("dingdingMessageService")
     MessageService messageService;
+    @Autowired
+    List<MessageService> messageServices;
+    @Autowired
+    @Qualifier("dingdingUserInfoService")
+    UserInfoService userInfoService;
     @Test
     public void getDeptListTest() {
         final List<OapiV2DepartmentListsubResponse.DeptBaseResponse> deptBaseResponses = deptService.selectDeptList(null);
@@ -91,11 +100,24 @@ public class MsgTest {
 
     @Test
     public void sendMsg() {
-        for (int i = 0; i < 10; i++) {
-
+        for (int i = 0; i < 1; i++) {
             List<String> userIds = Arrays.asList(new String[]{"221116691019969,manager2239"});
-            List<String> deptIds = Arrays.asList(new String[]{"1"});
+            List<Long> deptIds = Arrays.asList(new Long[]{1l});
             messageService.sendToDeptInUser(userIds,deptIds,false,"你们好，元旦放假了！！！,我正在测试消息发送多人"+UUID.randomUUID());
+        }
+    }
+
+    @Test
+    public void sendByPhone() {
+        String phone = "15358329069";
+        List<AbstrctUser> userList = userInfoService.selectUserBaseOnPhone(phone);
+        for (AbstrctUser abstrctUser : userList) {
+            DingDingUser dingDingUser = (DingDingUser) abstrctUser;
+            final OapiV2UserGetResponse.UserGetResponse userGetResponse = dingDingUser.getUserGetResponse();
+            final String userId = userGetResponse.getUserid();
+            final List<Long> deptIdList = userGetResponse.getDeptIdList();
+            List<String> userIdList = Arrays.asList(userId);
+            messageService.sendToDeptInUser(userIdList, deptIdList, false, "你好，手机人" + phone);
         }
     }
 }

@@ -10,12 +10,12 @@ import java.util.Map;
  */
 public class MessageServiceImpl implements MessageService {
     @Override
-    public Integer sendToAll() {
+    public Integer sendToAll(String msg) {
         return null;
     }
 
     @Override
-    public Integer sendToDeptInUser(List<String> userIds, List<String> depts, boolean allUser, String msg) {
+    public Integer sendToDeptInUser(List<String> userIds, List<Long> depts, boolean allUser, String msg) {
         return null;
     }
 

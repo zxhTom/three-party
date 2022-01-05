@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface MessageService {
-    public Integer sendToAll();
+    public Integer sendToAll(String msg);
 
 
-    public Integer sendToDeptInUser(List<String> userIds, List<String> depts, boolean allUser, String msg);
+    public Integer sendToDeptInUser(List<String> userIds, List<Long> depts, boolean allUser, String msg);
 
 }
