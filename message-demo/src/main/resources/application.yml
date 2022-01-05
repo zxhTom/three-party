@@ -1,0 +1,11 @@
+message:
+  dingding:
+    appKey: xxxxx
+    appSecret: xxxxxxx
+    agentId: xxxxxxx
+  wechat:
+    app-id: xxxxxxxxx
+    app-secret: xxxxxxxxxxx
+    template-id: xxxxxxx-xxxxxxxxxxxx
+server:
+  port: 8090
