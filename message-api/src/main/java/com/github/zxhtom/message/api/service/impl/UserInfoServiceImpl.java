@@ -23,4 +23,9 @@ public class UserInfoServiceImpl implements UserInfoService {
     public List<AbstrctUser> selectUserBaseOnPhone(String iphone) {
         return null;
     }
+
+    @Override
+    public AbstrctUser selectUserBaseOnCode(String code) {
+        return null;
+    }
 }

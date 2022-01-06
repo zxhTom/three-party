@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.zxhtom.message.api.model.AbstrctUser;
 import com.github.zxhtom.message.api.service.UserInfoService;
+import com.github.zxhtom.wechat.core.model.OauthToken;
 import com.github.zxhtom.wechat.core.model.WechatUser;
 import com.github.zxhtom.wechat.core.service.TokenService;
 
@@ -38,6 +39,30 @@ public class UserWechatInfoServiceImpl implements UserInfoService {
     @Override
     public List<AbstrctUser> selectUserBaseOnPhone(String iphone) {
         return null;
+    }
+
+    @Override
+    public AbstrctUser selectUserBaseOnCode(String code) {
+        OauthToken token = selectOTOnCode(code);
+        String url = String.format("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", token.getAccessToken(), token.getOpenId());
+        final String s = HttpUtil.get(url);
+        final WechatUser user = JSONObject.parseObject(s, WechatUser.class);
+        return user;
+    }
+
+    private OauthToken selectOTOnCode(String code) {
+        String appId = this.tokenService.getToken().getAppId();
+        String appSecret = this.tokenService.getToken().getAppSecret();
+        String url = String.format("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", appId,appSecret,code);
+        String s = HttpUtil.get(url);
+        JSONObject json = JSONObject.parseObject(s);
+        OauthToken token = new OauthToken();
+        token.setAccessToken(json.getString("access_token"));
+        token.setScope(json.getString("scope"));
+        token.setRefreshToken(json.getString("refresh_token"));
+        token.setOpenId(json.getString("openid"));
+        token.setExpiresIn(json.getLong("expires_in"));
+        return token;
     }
     private List<AbstrctUser> selectAllowUserList() {
         //获取用户列表

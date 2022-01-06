@@ -49,6 +49,13 @@ public class MsgTest {
     @Autowired
     @Qualifier("dingdingUserInfoService")
     UserInfoService userInfoService;
+
+    @Test
+    public void currentUserTest() {
+        String code = "9e6b328bb2223768bbbdbaa7b0db0726";
+        AbstrctUser abstrctUser = userInfoService.selectUserBaseOnCode(code);
+        System.out.println(abstrctUser);
+    }
     @Test
     public void getDeptListTest() {
         final List<OapiV2DepartmentListsubResponse.DeptBaseResponse> deptBaseResponses = deptService.selectDeptList(null);

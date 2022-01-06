@@ -1,6 +1,8 @@
 package com.github.zxhtom.dingding.core.service.impl;
 
+import cn.hutool.http.HttpUtil;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.dingtalk.api.DefaultDingTalkClient;
 import com.dingtalk.api.DingTalkClient;
 import com.dingtalk.api.request.OapiUserListsimpleRequest;
@@ -15,6 +17,7 @@ import com.github.zxhtom.message.api.model.AbstrctUser;
 import com.github.zxhtom.message.api.service.UserInfoService;
 import com.taobao.api.ApiException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,5 +109,22 @@ public class UserInfoDingDingServiceImpl implements UserInfoService {
         final OapiV2UserGetbymobileResponse.UserGetByMobileResponse result = rsp.getResult();
         final List<AbstrctUser> userList = selectFullUserInfo(Arrays.asList(result.getUserid()));
         return userList;
+    }
+
+    @Override
+    public AbstrctUser selectUserBaseOnCode(String code) {
+        String urlFormat = String.format("https://oapi.dingtalk.com/user/getuserinfo?access_token=%s&code=%s", this.tokenService.accessAndGetDingDingToken(), code);
+        String s = HttpUtil.get(urlFormat);
+        JSONObject json = JSONObject.parseObject(s);
+        if ("40078".equals(json.getString("errcode"))) {
+            throw new RuntimeException("code失效");
+        }
+        DingDingUser dingDingUser = JSONObject.parseObject(s, DingDingUser.class);
+        dingDingUser.setUserName(json.getString("name"));
+        List<AbstrctUser> userList = selectFullUserInfo(Arrays.asList(dingDingUser.getUserId()));
+        if (CollectionUtils.isNotEmpty(userList)) {
+            return userList.get(0);
+        }
+        return dingDingUser;
     }
 }

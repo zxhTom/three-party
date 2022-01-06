@@ -10,4 +10,6 @@ public interface UserInfoService {
     public List<AbstrctUser> selectFullUserInfo(List<String> userId);
 
     public List<AbstrctUser> selectUserBaseOnPhone(String iphone);
+
+    public AbstrctUser selectUserBaseOnCode(String code);
 }
