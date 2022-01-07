@@ -4,10 +4,11 @@ import com.github.zxhtom.message.api.service.MessageService;
 import com.github.zxhtom.message.api.service.UserInfoService;
 import com.github.zxhtom.wechat.core.config.Token;
 import com.github.zxhtom.wechat.core.service.TokenService;
+import com.github.zxhtom.message.api.service.UploadService;
 import com.github.zxhtom.wechat.core.service.impl.TokenServiceImpl;
 import com.github.zxhtom.wechat.core.service.impl.UserWechatInfoServiceImpl;
 import com.github.zxhtom.wechat.core.service.impl.WechatMessageServiceImpl;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import com.github.zxhtom.wechat.core.service.impl.WechatUploadServiceImpl;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
@@ -43,5 +44,12 @@ public class WechatAutoConfiguratin {
         UserWechatInfoServiceImpl userWechatInfoService = new UserWechatInfoServiceImpl();
         userWechatInfoService.setTokenService(tokenService);
         return userWechatInfoService;
+    }
+
+    @Bean("wechatUploadService")
+    public UploadService wechatUploadService(TokenService tokenService) {
+        WechatUploadServiceImpl uploadService = new WechatUploadServiceImpl();
+        uploadService.setTokenService(tokenService);
+        return uploadService;
     }
 }

@@ -14,6 +14,7 @@ import com.github.zxhtom.dingding.core.model.DingTalkResponse;
 import com.github.zxhtom.dingding.core.model.RobotMessage;
 import com.github.zxhtom.dingding.core.model.RobotResponse;
 import com.github.zxhtom.dingding.core.service.TokenService;
+import com.github.zxhtom.message.api.model.message.Message;
 import com.github.zxhtom.message.api.service.MessageService;
 import com.taobao.api.ApiException;
 import lombok.extern.slf4j.Slf4j;
@@ -45,16 +46,11 @@ public class MessageDingDingServiceImpl implements MessageService {
     }
 
     @Override
-    public Integer sendToAll(String msg) {
+    public Integer sendToAll(Message msg) {
         DingTalkClient client = new DefaultDingTalkClient("https://oapi.dingtalk.com/chat/send");
         OapiChatSendRequest req = new OapiChatSendRequest();
         req.setChatid("chate39f5xxxxxx335");
-        OapiChatSendRequest.Msg message = new OapiChatSendRequest.Msg();
-        OapiChatSendRequest.Text text = new OapiChatSendRequest.Text();
-        text.setContent(msg);
-        message.setText(text);
-        message.setMsgtype("text");
-        req.setMsg(msg);
+        req.setMsg(msg.toString());
         OapiChatSendResponse rsp = null;
         try {
             rsp = client.execute(req, tokenService.accessAndGetDingDingToken());
@@ -66,7 +62,7 @@ public class MessageDingDingServiceImpl implements MessageService {
     }
 
     @Override
-    public Integer sendToDeptInUser(List<String> userIds, List<Long> depts, boolean allUser, String message) {
+    public Integer sendToDeptInUser(List<String> userIds, List<Long> depts, boolean allUser, Message message) {
         if (!allUser){
             if (CollectionUtil.isEmpty(userIds)&& CollectionUtil.isEmpty(depts)){
                 throw new IllegalArgumentException("未推送给全部企业员工则需要指定企业员工或部门");
@@ -79,10 +75,11 @@ public class MessageDingDingServiceImpl implements MessageService {
                 throw new IllegalArgumentException("推送企业部门不能超过20个");
             }
         }
-        if (StringUtils.isEmpty(message)){
+        String msg = message.toString();
+        if (StringUtils.isEmpty(msg)){
             throw new IllegalArgumentException("消息体不能为空");
         }
-        if (message.getBytes().length>MESSAGE_MAX_SIZE){
+        if (msg.getBytes().length>MESSAGE_MAX_SIZE){
             throw new IllegalArgumentException("消息体最大长度不能超过"+MESSAGE_MAX_SIZE.toString()+"个字节");
         }
         DingTalkResponse dingTalkResponse=new DingTalkResponse();
@@ -98,10 +95,6 @@ public class MessageDingDingServiceImpl implements MessageService {
                 request.setDeptIdList(CollectionUtil.join(depts,","));
             }
         }
-        OapiMessageCorpconversationAsyncsendV2Request.Msg msg = new OapiMessageCorpconversationAsyncsendV2Request.Msg();
-        msg.setMsgtype("text");
-        msg.setText(new OapiMessageCorpconversationAsyncsendV2Request.Text());
-        msg.getText().setContent(message);
         //设置发送消息
         request.setMsg(msg);
         try {

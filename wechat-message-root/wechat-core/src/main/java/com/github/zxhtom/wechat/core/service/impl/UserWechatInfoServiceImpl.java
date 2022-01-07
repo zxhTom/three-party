@@ -50,10 +50,24 @@ public class UserWechatInfoServiceImpl implements UserInfoService {
         return user;
     }
 
+    public AbstrctUser selectUserBaseOnRefreshToken(String refreshToken) {
+        final String appId = this.tokenService.getToken().getAppId();
+        String url = String.format("https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%s&grant_type=refresh_token&refresh_token=%s", appId, refreshToken);
+        final OauthToken oauthToken = getOauthToken(url);
+        String usrl = String.format("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", oauthToken.getAccessToken(), oauthToken.getOpenId());
+        final String s = HttpUtil.get(usrl);
+        final WechatUser user = JSONObject.parseObject(s, WechatUser.class);
+        return user;
+    }
     private OauthToken selectOTOnCode(String code) {
         String appId = this.tokenService.getToken().getAppId();
         String appSecret = this.tokenService.getToken().getAppSecret();
         String url = String.format("https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&code=%s&grant_type=authorization_code", appId,appSecret,code);
+        OauthToken token = getOauthToken(url);
+        return token;
+    }
+
+    private OauthToken getOauthToken(String url) {
         String s = HttpUtil.get(url);
         JSONObject json = JSONObject.parseObject(s);
         OauthToken token = new OauthToken();
@@ -64,6 +78,7 @@ public class UserWechatInfoServiceImpl implements UserInfoService {
         token.setExpiresIn(json.getLong("expires_in"));
         return token;
     }
+
     private List<AbstrctUser> selectAllowUserList() {
         //获取用户列表
         String baseUrl = "https://api.weixin.qq.com/cgi-bin/user/get?access_token="+this.tokenService.accessAndGetDingDingToken();

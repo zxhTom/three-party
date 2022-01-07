@@ -2,10 +2,16 @@ package com.github.zxhtom.message.demo;
 
 import com.alibaba.fastjson.JSON;
 import com.github.zxhtom.message.api.model.AbstrctUser;
+import com.github.zxhtom.message.api.model.material.MeterialResponse;
+import com.github.zxhtom.message.api.model.material.impl.ImageMeterial;
+import com.github.zxhtom.message.api.model.message.impl.ImageMessage;
+import com.github.zxhtom.message.api.model.message.impl.TextMessage;
 import com.github.zxhtom.message.api.service.MessageService;
 import com.github.zxhtom.message.api.service.UserInfoService;
 import com.github.zxhtom.wechat.core.model.MsgData;
 import com.github.zxhtom.wechat.core.service.TokenService;
+import com.github.zxhtom.message.api.service.UploadService;
+import com.github.zxhtom.wechat.core.service.impl.WechatMessageServiceImpl;
 import com.github.zxhtom.wechat.core.utils.TemplateOnlineUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -15,6 +21,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,6 +54,23 @@ public class WechatTest {
     @Qualifier("wechatUserInfoService")
     UserInfoService userInfoService;
 
+    @Autowired
+    @Qualifier("wechatUploadService")
+    UploadService uploadService;
+    @Test
+    public void sendPic() {
+        WechatMessageServiceImpl wechatMessageService = (WechatMessageServiceImpl) messageService;
+        String openId = "ohlIG6FYIITO0_j3avuhPlWnEAnY";
+        ImageMessage message = new ImageMessage("cVXflRYfSsxidRUwrY6eJM-yBjMPZS2D5qf2owWoAnAcYaEjdTgCD54oYezenYiz");
+        wechatMessageService.sendCommonMsgBaseOpenId(openId, message);
+    }
+    @Test
+    public void upload() throws FileNotFoundException {
+        String fileName = "/template.jpeg";
+        InputStream resourceAsStream = this.getClass().getResourceAsStream(fileName);
+        final MeterialResponse response = uploadService.uploadPic(new ImageMeterial(), fileName, resourceAsStream);
+        System.out.println(response);
+    }
     @Test
     public void getToken() {
         final String s = tokenService.accessAndGetDingDingToken();
@@ -93,6 +120,15 @@ public class WechatTest {
         dataList.add(keyword4);
         dataList.add(remark);
         TemplateOnlineUtils.setTemplateId("zr42C8YoW06PIHz_PkXP714ev8dqMFVCR16LTRxOGg8");
-        messageService.sendToDeptInUser(userIds, null, false, JSON.toJSONString(dataList));
+        TextMessage message = new TextMessage(JSON.toJSONString(dataList));
+
+        messageService.sendToDeptInUser(userIds, null, false, message);
+    }
+
+    @Test
+    public void selectUserByCode() {
+        String code = "091JVyll2J3Op84lb7ml2H12ZB1JVylZ";
+        final AbstrctUser abstrctUser = userInfoService.selectUserBaseOnCode(code);
+        System.out.println(abstrctUser);
     }
 }

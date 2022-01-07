@@ -7,6 +7,7 @@ import com.github.zxhtom.dingding.core.service.TokenService;
 import com.github.zxhtom.dingding.core.service.impl.*;
 import com.github.zxhtom.dingding.starter.annotation.DingDing;
 import com.github.zxhtom.message.api.service.MessageService;
+import com.github.zxhtom.message.api.service.UploadService;
 import com.github.zxhtom.message.api.service.UserInfoService;
 import com.github.zxhtom.message.api.service.impl.UserInfoServiceImpl;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -63,5 +64,12 @@ public class StartConfig {
         MessageDingDingServiceImpl messageDingDingService = new MessageDingDingServiceImpl();
         messageDingDingService.setTokenService(tokenService);
         return messageDingDingService;
+    }
+
+    @Bean("dingdingUploadService")
+    public UploadService uploadService(TokenService tokenService) {
+        DingDingUploadServiceImpl uploadService = new DingDingUploadServiceImpl();
+        uploadService.setTokenService(tokenService);
+        return uploadService;
     }
 }

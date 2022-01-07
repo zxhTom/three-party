@@ -10,7 +10,13 @@ import com.github.zxhtom.dingding.core.service.DeptService;
 import com.github.zxhtom.dingding.core.service.RobotMessageService;
 import com.github.zxhtom.dingding.starter.annotation.DingDing;
 import com.github.zxhtom.message.api.model.AbstrctUser;
+import com.github.zxhtom.message.api.model.material.MeterialResponse;
+import com.github.zxhtom.message.api.model.material.impl.ImageMeterial;
+import com.github.zxhtom.message.api.model.message.Message;
+import com.github.zxhtom.message.api.model.message.impl.ImageMessage;
+import com.github.zxhtom.message.api.model.message.impl.TextMessage;
 import com.github.zxhtom.message.api.service.MessageService;
+import com.github.zxhtom.message.api.service.UploadService;
 import com.github.zxhtom.message.api.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -20,6 +26,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,6 +60,28 @@ public class MsgTest {
     @Qualifier("dingdingUserInfoService")
     UserInfoService userInfoService;
 
+    @Autowired
+    @Qualifier("dingdingUploadService")
+    UploadService uploadService;
+
+    @Test
+    public void sendMultiTypeMessage() {
+        String fileName = "/macpower.png";
+        InputStream resourceAsStream = this.getClass().getResourceAsStream(fileName);
+        final MeterialResponse response = uploadService.uploadPic(new ImageMeterial(), fileName, resourceAsStream);
+        System.out.println(response);
+        Message message = new ImageMessage(response.getMediaId());
+        List<String> userIds = Arrays.asList(new String[]{"manager2239"});
+        List<Long> deptIds = Arrays.asList(new Long[]{1l});
+        messageService.sendToDeptInUser(userIds,deptIds,false,message);
+    }
+    @Test
+    public void upload() throws FileNotFoundException {
+        String fileName = "/macpower.png";
+        InputStream resourceAsStream = this.getClass().getResourceAsStream(fileName);
+        final MeterialResponse response = uploadService.uploadPic(new ImageMeterial(), fileName, resourceAsStream);
+        System.out.println(response);
+    }
     @Test
     public void currentUserTest() {
         String code = "9e6b328bb2223768bbbdbaa7b0db0726";
@@ -110,13 +142,13 @@ public class MsgTest {
         for (int i = 0; i < 1; i++) {
             List<String> userIds = Arrays.asList(new String[]{"221116691019969,manager2239"});
             List<Long> deptIds = Arrays.asList(new Long[]{1l});
-            messageService.sendToDeptInUser(userIds,deptIds,false,"你们好，元旦放假了！！！,我正在测试消息发送多人"+UUID.randomUUID());
+            messageService.sendToDeptInUser(userIds,deptIds,false,new TextMessage("你们好，元旦放假了！！！,我正在测试消息发送多人"+UUID.randomUUID()));
         }
     }
 
     @Test
     public void sendByPhone() {
-        String phone = "15358329069";
+        String phone = "17366236771";
         List<AbstrctUser> userList = userInfoService.selectUserBaseOnPhone(phone);
         for (AbstrctUser abstrctUser : userList) {
             DingDingUser dingDingUser = (DingDingUser) abstrctUser;
@@ -124,7 +156,7 @@ public class MsgTest {
             final String userId = userGetResponse.getUserid();
             final List<Long> deptIdList = userGetResponse.getDeptIdList();
             List<String> userIdList = Arrays.asList(userId);
-            messageService.sendToDeptInUser(userIdList, deptIdList, false, "你好，手机人" + phone);
+            messageService.sendToDeptInUser(userIdList, deptIdList, false, new TextMessage("你好，手机人" + phone));
         }
     }
 }
