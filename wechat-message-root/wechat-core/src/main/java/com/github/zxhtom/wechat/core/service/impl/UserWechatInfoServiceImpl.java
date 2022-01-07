@@ -47,6 +47,8 @@ public class UserWechatInfoServiceImpl implements UserInfoService {
         String url = String.format("https://api.weixin.qq.com/sns/userinfo?access_token=%s&openid=%s&lang=zh_CN", token.getAccessToken(), token.getOpenId());
         final String s = HttpUtil.get(url);
         final WechatUser user = JSONObject.parseObject(s, WechatUser.class);
+        user.setAvatar(user.getHeadimgurl());
+        user.setUserName(user.getNickname());
         return user;
     }
 

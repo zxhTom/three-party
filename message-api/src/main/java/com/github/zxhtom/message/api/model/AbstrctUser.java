@@ -13,4 +13,6 @@ public class AbstrctUser {
     private String userId;
     private String visualUserId;
     private String userName;
+    private String avatar;
+    private String mobile;
 }

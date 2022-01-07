@@ -86,6 +86,8 @@ public class UserInfoDingDingServiceImpl implements UserInfoService {
             user.setUserId(result.getUserid());
             user.setUserName(result.getName());
             user.setVisualUserId(result.getUnionid());
+            user.setAvatar(result.getAvatar());
+            user.setMobile(result.getMobile());
             userList.add(user);
         }
         return userList;
